@@ -87,7 +87,7 @@ if args.augmentation:
                             prob_change=args.aug_prob, 
                             percentage_changed_tags=args.percentage_tags)]
     
-train_ds, test_ds = load_train_test_split("../symptemist_train/subtask1-ner/",
+train_ds, test_ds = load_train_test_split("../symptemist-train_all_subtasks+gazetteer+multilingual+test_task1_230929/symptemist_train/subtask1-ner/",
                                           tokenizer=tokenizer,
                                           context_size=CONTEXT_SIZE,
                                           test_split_percentage=0.15,
