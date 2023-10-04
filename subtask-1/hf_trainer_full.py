@@ -25,6 +25,8 @@ parser.add_argument("checkpoint", type=str)
 parser.add_argument("--model_type_arch", type=str, default="bilstm")
 parser.add_argument("--percentage_tags", type=float, default=0.2)
 parser.add_argument("--augmentation", type=str, default=None)
+parser.add_argument("--aug_prob", type=float, default=0.5)
+parser.add_argument("--name", type=str, default=None)
 parser.add_argument("--context", type=int, default=64)
 parser.add_argument("--epochs", type=int, default=30)
 parser.add_argument("--batch", type=int, default=8)
@@ -38,11 +40,11 @@ model_checkpoint = args.checkpoint#"pubmed_bert_classifier_V2_synthetic/checkpoi
 name = model_checkpoint.split("/")[0]
 
 if args.augmentation is not None:
-    dir_name = f"{name}-{args.model_type_arch}-{args.context}-{args.augmentation}-{args.percentage_tags}-{args.random_seed}-roberta-es-ner-trainer-full-v6"
+    dir_name = f"trained-models/{name}-{args.name}-{args.model_type_arch}-{args.context}-{args.augmentation}-{args.percentage_tags}-{args.aug_prob}-{args.random_seed}"
 else:
-    dir_name = f"{name}-{args.model_type_arch}-{args.context}-{args.random_seed}-roberta-es-ner-trainer-full-v6"
+    dir_name = f"trained-models/{name}-{args.name}-{args.model_type_arch}-{args.context}-{args.random_seed}"
 
-setup_wandb()
+setup_wandb(dir_name)
 training_args = create_config("roberta_trainer_config.yaml", 
                               output_dir=dir_name,
                               num_train_epochs=args.epochs,
@@ -74,16 +76,16 @@ if args.augmentation:
         print("Note: The trainer will use RandomlyUKNTokens augmentation")
         train_augmentation = [RandomlyUKNTokens(tokenizer=tokenizer, 
                             context_size=CONTEXT_SIZE,
-                            prob_change=0.5, 
+                            prob_change=args.aug_prob, 
                             percentage_changed_tags=args.percentage_tags)]
     elif args.augmentation=="random":
         print("Note: The trainer will use RandomlyReplaceTokens augmentation")
         train_augmentation = [RandomlyReplaceTokens(tokenizer=tokenizer, 
                             context_size=CONTEXT_SIZE,
-                            prob_change=0.5, 
+                            prob_change=args.aug_prob, 
                             percentage_changed_tags=args.percentage_tags)]
     
-train_ds, _ = load_train_test_split("dataset/medprocner_train",
+train_ds, _ = load_train_test_split("../symptemist-train_all_subtasks+gazetteer+multilingual+test_task1_230929/symptemist_train/subtask1-ner/",
                                           tokenizer=tokenizer,
                                           context_size=CONTEXT_SIZE,
                                           test_split_percentage=0,

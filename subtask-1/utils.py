@@ -73,7 +73,7 @@ def split_chunks(a, n):
 
 def setup_wandb(name):
     os.environ["WANDB_API_KEY"] = open(".api").read().strip()
-    os.environ["WANDB_PROJECT"] = "BioCreative-Track2-val2"
+    os.environ["WANDB_PROJECT"] = "BioCreative-Track2-Full"
     os.environ["WANDB_LOG_MODEL"]="false"
     os.environ["WANDB_ENTITY"] = "bitua"
     os.environ["WANDB_NAME"] = name
