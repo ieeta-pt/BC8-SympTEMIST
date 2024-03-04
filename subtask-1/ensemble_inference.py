@@ -9,7 +9,7 @@ def main(runs, out):
     
     model_preds = []
     
-    
+    print(len(runs), runs)
     
     for run in runs:
         with open(run) as f:

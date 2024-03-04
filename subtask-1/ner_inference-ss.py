@@ -10,6 +10,7 @@ import torch
 from ensemble import ensemble_entity_level, ensemble_span_level
 import pandas as pd
 from collections import defaultdict 
+from tqdm import tqdm
 
 import os
 import json
@@ -137,9 +138,9 @@ def remove_txt(data):
 @click.option("--checkpoint")
 # @click.option("--revision", default="main")
 # @click.option("--testset_folder")
-@click.option("--out_folder", default="runs")
+@click.option("--out_folder", default="silver_standard_runs")
 def main(checkpoint, out_folder):
-    testset_folder = "../symptemist-train_all_subtasks+gazetteer+multilingual+test_task1_230929/symptemist_test/subtask1-ner"
+    testset_folder = "../symptemist-train_all_subtasks+gazetteer+multilingual+test_all_subtasks+bg_231006/symptemist_background-set/all_txt"
     if torch.cuda.is_available():
         #single GPU bc CRF
         assert torch.cuda.device_count()==1
@@ -157,7 +158,7 @@ def main(checkpoint, out_folder):
     dl = DataLoader(test_ds, batch_size=8, collate_fn=eval_datacollator)
     
     outputs = []
-    for train_batch in dl:
+    for train_batch in tqdm(dl):
         with torch.no_grad():
             train_batch["output"] = model(**train_batch["inputs"].to("cuda"))
             train_batch |= train_batch["inputs"]
